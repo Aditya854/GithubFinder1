@@ -1,9 +1,10 @@
 import UserResults from "../components/users/UserResults"
+import UserSearch from "../components/users/UserSearch"
 
 function Home() {
     return (
         <div>
-            {/* {search component} */}
+            <UserSearch/>
             <UserResults/>
             {/* {process.env.REACT_APP_GITHUB_TOKEN} */}
         </div>
