@@ -4,17 +4,22 @@ import { useParams, Link } from 'react-router-dom'
 import Spinner from '../components/layout/Spinner'
 import RepoList from '../components/repos/RepoList'
 import GithubContext from '../context/github/GithubContext'
-// import { getUserAndRepos } from '../context/github/GithubActions'
+import { getUserAndRepos } from '../context/github/GithubActions'
 
 function User() {
-  const { user, getUser, loading, getUserRepos, repos } = useContext(GithubContext)
+  const { user, loading, repos, dispatch } = useContext(GithubContext)
 
   const params = useParams()
 
   useEffect(() => {
-    getUser(params.login)
-    getUserRepos(params.login)
-  }, [])
+    dispatch({ type: 'SET_LOADING' })
+    const getUserData = async () => {
+      const userData = await getUserAndRepos(params.login)
+      dispatch({ type: 'GET_USER_AND_REPOS', payload: userData })
+    }
+
+    getUserData()
+  }, [dispatch, params.login])
 
   const {
     name,
@@ -39,7 +44,7 @@ function User() {
 
   // NOTE: check for valid url to users website
 
-//   const websiteUrl = blog?.startsWith('http') ? blog : 'https://' + blog
+  const websiteUrl = blog?.startsWith('http') ? blog : 'https://' + blog
 
   // NOTE: code here has been fixed so that stats no longer show scroll bar on
   // mobile / small devices
@@ -104,8 +109,8 @@ function User() {
                 <div className='stat'>
                   <div className='stat-title text-md'>Website</div>
                   <div className='text-lg stat-value'>
-                    <a href={`https://${blog}`} target='_blank' rel='noreferrer'>
-                      {blog}
+                    <a href={websiteUrl} target='_blank' rel='noreferrer'>
+                      {websiteUrl}
                     </a>
                   </div>
                 </div>
